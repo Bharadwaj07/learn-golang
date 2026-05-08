@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"strings"
 
-	"gorm.io/gorm" // ← was bolt
+	"gorm.io/gorm"
 )
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -71,6 +71,7 @@ func shortenHandler(db *gorm.DB) http.HandlerFunc {
 		})
 	}
 }
+
 func getShortenHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {

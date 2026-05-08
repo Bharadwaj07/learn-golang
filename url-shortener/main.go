@@ -14,6 +14,7 @@ func main() {
 	}
 
 	http.HandleFunc("/shorten", shortenHandler(db))
+	http.HandleFunc("/", getShortenHandler(db))
 
 	fmt.Println("Server running on http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
