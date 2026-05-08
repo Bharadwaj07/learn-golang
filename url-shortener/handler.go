@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"gorm.io/gorm" // ← was bolt
 )
@@ -68,5 +69,27 @@ func shortenHandler(db *gorm.DB) http.HandlerFunc {
 			Code:     code,
 			ShortURL: "http://localhost:8080/" + code,
 		})
+	}
+}
+func getShortenHandler(db *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		code := strings.TrimPrefix(r.URL.Path, "/")
+		if code == "" {
+			http.Error(w, "code is required", http.StatusBadRequest)
+			return
+		}
+
+		url, err := getLink(db, code)
+		if err != nil {
+			http.Error(w, "link not found", http.StatusNotFound)
+			return
+		}
+
+		http.Redirect(w, r, url, http.StatusMovedPermanently)
 	}
 }
